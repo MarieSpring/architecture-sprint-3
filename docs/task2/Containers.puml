@@ -1,0 +1,55 @@
+@startuml
+
+title Container Diagram
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Container(User, "Пользовательское приложение")
+System(SmartHomeSystem, "Smart Home", "Приложение для экосистемы умных посёлков")
+
+Container_Boundary(SmartHomeSystem, "Smart Home") {
+    Container(ApiGateway, "API Gateway")
+
+    Container(Kafka, "Kafka", "Apache Kafka")
+
+    Container(AuthService, "Auth Service")
+    
+    Container(UserService, "User Service", "Java")
+    Container(UserServiceDatabase, "User Service Database", "PostgreSQL")
+
+    Container(NotificationService, "Notification Service", "Java")
+
+    Container(TechnicalSupportService, "Technical Support Service", "Java")
+    Container(TechnicalSupportServiceDatabase, "Technical Support Service Database", "PostgreSQL")
+
+    Container(DeviceService, "Device Service", "Java")
+    Container(DeviceServiceDatabase, "Device Service Database", "PostgreSQL")
+
+    Container(ScenarioService, "Scenario Service", "Java")
+    Container(ScenarioServiceDatabase, "Scenario Service Database", "PostgreSQL")
+}
+
+Container_Ext(Sensor, "Sensor")
+Container_Ext(Device, "Device")
+
+Rel(User, ApiGateway, "Клиентские запросы")
+
+Rel(Kafka, NotificationService, "Уведомления")
+
+Rel(ApiGateway, AuthService, "Запрос авторизации/аутентификации")
+Rel(ApiGateway, UserService, "Управление пользователями")
+Rel(ApiGateway, TechnicalSupportService, "Управление заявками на тех поддержку")
+Rel(ApiGateway, DeviceService, "Управление устройствами")
+Rel(ApiGateway, ScenarioService, "Управление сценариями")
+
+Rel(DeviceService, Kafka, "Управление устройствами")
+
+Rel(UserService, UserServiceDatabase, "Чтение и запись", "SQL/TCP")
+Rel(TechnicalSupportService, TechnicalSupportServiceDatabase, "Чтение и запись", "SQL/TCP")
+Rel(DeviceService, DeviceServiceDatabase, "Чтение и запись", "SQL/TCP")
+Rel(ScenarioService, ScenarioServiceDatabase, "Чтение и запись", "SQL/TCP")
+
+Rel(Sensor, Kafka, "Сенсоры отправляют данные в брокер сообщений")
+Rel(Kafka, Device, "Управляет устройством")
+
+@enduml
