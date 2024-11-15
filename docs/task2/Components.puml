@@ -13,12 +13,10 @@ Container_Boundary(FitLifeSystem, "FitLife System") {
 }
 
 Container(DeviceService, "Device Service") {
-  Component(AuthController, "AuthController", "Handles authentication and authorization")
-  Component(UserController, "UserController", "Manages user profiles")
-  Component(ScheduleController, "ScheduleController", "Manages schedules")
-  Component(PaymentController, "PaymentController", "Handles payment processing")
-  Component(ServiceLayer, "Service Layer", "Business logic")
-  Component(RepositoryLayer, "Repository Layer", "Data access logic")
+  Component(KafkaProducer, "Kafka Producer", , "Сервис публикации задач в брокер Kafka")
+  Component(DeviceController, "Device Controller")
+  Component(ServiceLayer, "Service Layer", "Бизнес-логика")
+  Component(DeviceStatusService, "Device Status Manager") 
 }
 
 Rel(App, ApiGateway, "Клиентские запросы")
@@ -26,5 +24,8 @@ Rel(DeviceService, Kafka, "Управление устройствами")
 Rel(ApiGateway, DeviceService, "Управление устройствами")
 Rel(DeviceService, Database, "Чтение и запись", "SQL/TCP")
 
+Rel(DeviceStatusService, KafkaProducer, "Публикация событий")
+Rel(DeviceController, ServiceLayer, "Использует")
+Rel(ServiceLayer, KafkaProducer, "Публикация событий")
 
 @enduml
