@@ -24,7 +24,7 @@ Rel(DeviceService, Kafka, "Управление устройствами")
 Rel(ApiGateway, DeviceService, "Управление устройствами")
 Rel(DeviceService, Database, "Чтение и запись", "SQL/TCP")
 
-Rel(DeviceStatusService, KafkaProducer, "Публикация событий")
+Rel(DeviceStatusService, ServiceLayer, "Передача состояний")
 Rel(DeviceController, ServiceLayer, "Использует")
 Rel(ServiceLayer, KafkaProducer, "Публикация событий")
 

@@ -1,0 +1,46 @@
+@startuml
+
+title Code Diagram
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+class Device {
+    +Long id
+    +String name
+    +String serialNumber
+    +enum type
+}
+
+class DeviceStatus {
+    +Long deviceId
+    +enum status
+    +datetime createdAt 
+}
+
+class DeviceEvent {
+    +Long deviceId
+    +enum type
+    +String data
+    +String metaData
+    +datetime createdAt 
+}
+
+class KafkaProducer {
+    +createEvent(event: DeviceEvent): boolean
+}
+
+class ServiceLayer {
+    +getDevice(id: Long): Device
+    +setDevice(status: DeviceStatus): Long
+   
+    +getStatus(id: Long): DeviceStatus
+    +setStatus(status: DeviceStatus): Long
+
+     +publishEvent(event: DeviceEvent): void
+}
+
+ServiceLayer --> KafkaProducer: публикует события
+ServiceLayer --> Device : управляет
+ServiceLayer --> DeviceStatus : управляет
+
+@enduml
