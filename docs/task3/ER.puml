@@ -1,0 +1,49 @@
+@@ -0,0 +1,48 @@
+@startuml
+
+entity "User" as user {
+    * id : Long <<generated>>
+    --
+    name : String
+    email : String
+    phone : String
+    password : String
+}
+
+entity "House" as house {
+    * id : Long <<generated>>
+    --
+    userId : Long <<FK>>
+    info : String
+}
+
+entity "Device" as device {
+    * id : Long <<generated>>
+    --
+    name : String
+    serialNumber : String
+    type: Enum
+    houseId: Long <<FK>>
+}
+
+entity "DeviceStatus" as deviceStatus {
+    * id : Long <<generated>>
+    --
+    deviceId: Long <<FK>>
+    status : String
+    createdAt : timestamp
+}
+
+entity "TelemetryData" as telemetryData {
+    * id : Long <<generated>>
+    --
+    deviceId : Long <<FK>>
+    value : String
+    createdAt : timestamp
+}
+
+user ||--o{ house 
+house ||--o{ device 
+device ||--o{ telemetryData 
+device ||--o{ deviceStatus 
+@enduml

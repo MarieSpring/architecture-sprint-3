@@ -9,6 +9,7 @@ class Device {
     +String name
     +String serialNumber
     +enum type
+    +Long houseId
 }
 
 class DeviceStatus {
@@ -36,7 +37,7 @@ class ServiceLayer {
     +getStatus(id: Long): DeviceStatus
     +setStatus(status: DeviceStatus): Long
 
-     +publishEvent(event: DeviceEvent): void
+    +publishEvent(event: DeviceEvent): void
 }
 
 ServiceLayer --> KafkaProducer: публикует события
