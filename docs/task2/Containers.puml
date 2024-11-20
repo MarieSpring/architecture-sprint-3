@@ -4,8 +4,10 @@ title Container Diagram
 
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
-Container(User, "Пользовательское приложение")
-System(SmartHomeSystem, "Smart Home", "Приложение для экосистемы умных посёлков")
+Person(User, "Пользователь", "Пользователь приложения")
+
+Container(MobileApplication, "Mobile Application", , "Мобильное приложение")
+Container(SmartHomeSystem, "Smart Home", "Java&PostgreSQL", "Приложение для экосистемы умных посёлков")
 
 Container_Boundary(SmartHomeSystem, "Smart Home") {
     Container(ApiGateway, "API Gateway")
@@ -13,14 +15,13 @@ Container_Boundary(SmartHomeSystem, "Smart Home") {
     Container(Kafka, "Kafka", "Apache Kafka")
 
     Container(AuthService, "Auth Service")
+    Container(AuthServiceDatabase, "Auth Service Database", "PostgreSQL")
     
     Container(UserService, "User Service", "Java")
     Container(UserServiceDatabase, "User Service Database", "PostgreSQL")
 
-    Container(NotificationService, "Notification Service", "Java")
-
-    Container(TechnicalSupportService, "Technical Support Service", "Java")
-    Container(TechnicalSupportServiceDatabase, "Technical Support Service Database", "PostgreSQL")
+    Container(TelemetryService, "Telemetry Service", "Java")
+    Container(TelemetryServiceDatabase, "Telemetry Service Database", "PostgreSQL")
 
     Container(DeviceService, "Device Service", "Java")
     Container(DeviceServiceDatabase, "Device Service Database", "PostgreSQL")
@@ -32,24 +33,24 @@ Container_Boundary(SmartHomeSystem, "Smart Home") {
 Container_Ext(Sensor, "Sensor")
 Container_Ext(Device, "Device")
 
-Rel(User, ApiGateway, "Клиентские запросы")
-
-Rel(Kafka, NotificationService, "Уведомления")
+Rel(User, MobileApplication, "Использует приложение")
+Rel(MobileApplication, ApiGateway, "Использует SmartHomeSystem", "REST API, HTTP")
 
 Rel(ApiGateway, AuthService, "Запрос авторизации/аутентификации")
 Rel(ApiGateway, UserService, "Управление пользователями")
-Rel(ApiGateway, TechnicalSupportService, "Управление заявками на тех поддержку")
+Rel(ApiGateway, TelemetryService, "Управление данными телеметрии")
 Rel(ApiGateway, DeviceService, "Управление устройствами")
 Rel(ApiGateway, ScenarioService, "Управление сценариями")
 
 Rel(DeviceService, Kafka, "Управление устройствами")
 
+Rel(AuthService, AuthServiceDatabase, "Чтение и запись", "SQL/TCP")
 Rel(UserService, UserServiceDatabase, "Чтение и запись", "SQL/TCP")
-Rel(TechnicalSupportService, TechnicalSupportServiceDatabase, "Чтение и запись", "SQL/TCP")
+Rel(TelemetryService, TelemetryServiceDatabase, "Чтение и запись", "SQL/TCP")
 Rel(DeviceService, DeviceServiceDatabase, "Чтение и запись", "SQL/TCP")
 Rel(ScenarioService, ScenarioServiceDatabase, "Чтение и запись", "SQL/TCP")
 
-Rel(Sensor, Kafka, "Сенсоры отправляют данные в брокер сообщений")
-Rel(Kafka, Device, "Управляет устройством")
+Rel(Kafka, Sensor, "Запрашивает данные", "TCP")
+Rel(Kafka, Device, "Управляет устройством", "TCP")
 
 @enduml
