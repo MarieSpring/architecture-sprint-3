@@ -1,0 +1,18 @@
+@startuml c1
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Context diagram
+
+Person(User, "Пользователь", "Пользователь приложения")
+
+Container(MobileApplication, "Mobile Application", , "Мобильное приложение")
+Container(System, "Smart Home Monolith", "Java&PostgreSQL", "Система для управления отоплением и мониторинга температуры в умном доме")
+
+System_Ext(Modules, "Датчики", "Датчики, установленные в доме клиента")
+
+Rel(User, MobileApplication, "Использует приложение")
+Rel(MobileApplication, System, "Использует монолитную систему", "REST API, HTTP")
+Rel(System, Modules, "Управляет отоплением и выполняет мониторинг температуры в умном доме", "TCP")
+
+@enduml

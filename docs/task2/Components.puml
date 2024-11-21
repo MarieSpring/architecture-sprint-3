@@ -1,0 +1,31 @@
+@startuml
+
+title Component Diagram - DeviceService
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary(FitLifeSystem, "FitLife System") {
+  Container(App, "Application")
+  Container(ApiGateway, "API Gateway")  
+  Container(DeviceService, "Device Service", "Java")
+  Container(Database, "Database", "PostgreSQL")
+  Container(Kafka, "Kafka", "Apache Kafka")
+}
+
+Container(DeviceService, "Device Service") {
+  Component(KafkaProducer, "Kafka Producer", , "Сервис публикации задач в брокер Kafka")
+  Component(DeviceController, "Device Controller")
+  Component(ServiceLayer, "Service Layer", "Бизнес-логика")
+  Component(DeviceStatusService, "Device Status Manager") 
+}
+
+Rel(App, ApiGateway, "Клиентские запросы")
+Rel(DeviceService, Kafka, "Управление устройствами")
+Rel(ApiGateway, DeviceService, "Управление устройствами")
+Rel(DeviceService, Database, "Чтение и запись", "SQL/TCP")
+
+Rel(DeviceStatusService, ServiceLayer, "Передача состояний")
+Rel(DeviceController, ServiceLayer, "Использует")
+Rel(ServiceLayer, KafkaProducer, "Публикация событий")
+
+@enduml
