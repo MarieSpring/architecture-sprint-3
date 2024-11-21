@@ -28,6 +28,9 @@ Container_Boundary(SmartHomeSystem, "Smart Home") {
 
     Container(ScenarioService, "Scenario Service", "Java")
     Container(ScenarioServiceDatabase, "Scenario Service Database", "PostgreSQL")
+
+    Container(HouseManagementService, "House Management Service", "Java")
+    Container(HouseManagementServiceDatabase, "House Management Service Database", "PostgreSQL")    
 }
 
 Container_Ext(Sensor, "Sensor")
@@ -41,16 +44,21 @@ Rel(ApiGateway, UserService, "Управление пользователями"
 Rel(ApiGateway, TelemetryService, "Управление данными телеметрии")
 Rel(ApiGateway, DeviceService, "Управление устройствами")
 Rel(ApiGateway, ScenarioService, "Управление сценариями")
+Rel(ApiGateway, HouseManagementService, "Управление домами")
 
 Rel(DeviceService, Kafka, "Управление устройствами")
+Rel(ScenarioService, Kafka, "Управление сценариями")
+Rel(HouseManagementService, Kafka, "Управление домами")
+Rel(TelemetryService, Kafka, "Получение данных телеметрии")
 
 Rel(AuthService, AuthServiceDatabase, "Чтение и запись", "SQL/TCP")
 Rel(UserService, UserServiceDatabase, "Чтение и запись", "SQL/TCP")
 Rel(TelemetryService, TelemetryServiceDatabase, "Чтение и запись", "SQL/TCP")
 Rel(DeviceService, DeviceServiceDatabase, "Чтение и запись", "SQL/TCP")
 Rel(ScenarioService, ScenarioServiceDatabase, "Чтение и запись", "SQL/TCP")
+Rel(HouseManagementService, HouseManagementServiceDatabase, "Чтение и запись", "SQL/TCP")
 
-Rel(Kafka, Sensor, "Запрашивает данные", "TCP")
-Rel(Kafka, Device, "Управляет устройством", "TCP")
+Rel(DeviceService, Sensor, "Запрашивает данные", "TCP")
+Rel(DeviceService, Device, "Управляет устройством", "TCP")
 
 @enduml

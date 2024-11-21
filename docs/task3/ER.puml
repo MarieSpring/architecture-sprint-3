@@ -3,8 +3,8 @@
 
 entity "Module" as module {
     *id : Long <<generated>>
-    *name : String     
-    *houseId: Long   
+    *name : String       
+    *deviceId: Long 
 }
 
 entity "User" as user {
@@ -30,8 +30,7 @@ entity "Device" as device {
     *name : String   
     *type: DeviceType
     *serialNumber : String
-    *houseId: Long
-    *moduleId: Long 
+    *houseId: Long    
 }
 
 enum DeviceType {
@@ -62,9 +61,7 @@ house::id *-- device::houseId
 
 device::id *-- deviceStatus::deviceId
 device::id *-- telemetryData::deviceId
-
-house::id *-- module::houseId
-module::id *-- device::moduleId
+device::id *-- module::deviceId
 
 device +-- DeviceType
 
