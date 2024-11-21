@@ -1,49 +1,71 @@
 @@ -0,0 +1,48 @@
 @startuml
 
+entity "Module" as module {
+    *id : Long <<generated>>
+    *name : String     
+    *houseId: Long   
+}
+
 entity "User" as user {
-    * id : Long <<generated>>
-    --
-    name : String
+    *id : Long <<generated>>
+    *name : String
+    *password : String
     email : String
     phone : String
-    password : String
 }
 
 entity "House" as house {
-    * id : Long <<generated>>
-    --
-    userId : Long <<FK>>
-    info : String
+    *id : Long <<generated>>
+    *address: String
+}
+
+entity "UserHouse" as uh {
+    *userId : Long  
+    *houseId: Long  
 }
 
 entity "Device" as device {
     * id : Long <<generated>>
-    --
-    name : String
-    serialNumber : String
-    type: Enum
-    houseId: Long <<FK>>
+    *name : String   
+    *type: DeviceType
+    *serialNumber : String
+    *houseId: Long
+    *moduleId: Long 
+}
+
+enum DeviceType {
+  HEATING
+  LIGHT
+  GATES
+  CAMERA
 }
 
 entity "DeviceStatus" as deviceStatus {
-    * id : Long <<generated>>
-    --
-    deviceId: Long <<FK>>
-    status : String
+    *id : Long <<generated>>
+    *deviceId: Long
+    *status : String
     createdAt : timestamp
 }
 
 entity "TelemetryData" as telemetryData {
-    * id : Long <<generated>>
-    --
-    deviceId : Long <<FK>>
-    value : String
+    *id : Long <<generated>>
+    *deviceId : Long
+    *value : String
     createdAt : timestamp
 }
 
-user ||--o{ house 
-house ||--o{ device 
-device ||--o{ telemetryData 
-device ||--o{ deviceStatus 
+user::id *-- uh::userId
+house::id *-- uh::houseId
+
+house::id *-- device::houseId
+
+device::id *-- deviceStatus::deviceId
+device::id *-- telemetryData::deviceId
+
+house::id *-- module::houseId
+module::id *-- device::moduleId
+
+device +-- DeviceType
+
 @enduml
