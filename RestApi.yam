@@ -1,0 +1,205 @@
+openapi: 3.0.3
+info:
+  title: API экосистемы умных посёлков
+  description: API экосистемы для управления умными устройствами в доме. 
+  version: 1.0.0
+
+paths:
+  /device/{deviceId}:
+    get:
+      tags:
+        - device
+      summary: Получить информация о конкретном устройстве
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          description: ID устройства
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Запрос отработан корректно
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+        '404':
+          description: Устройтво не найдено
+        '500':
+          description: Ошибка сервера
+          
+    delete:
+      tags:
+        - device
+      summary: Удалить устройство
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          description: ID устройства
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Запрос отработан корректно
+        '404':
+          description: Устройтво не найдено
+        '500':
+          description: Ошибка сервера
+            
+  /device/{deviceId}/status:
+    post:
+      tags:
+        - device
+      summary: Установить состояние для устройства
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          description: ID устройства
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: on
+      responses:
+        '404':
+          description: Устройтво не найдено
+        '500':
+          description: Ошибка сервера
+            
+  /device/{deviceId}/telemetry:
+    get:
+      tags:
+        - device
+      summary: Получить телеметрию по конкретному устройству
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          description: ID устройства
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Запрос отработан корректно 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TelemetryData'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TelemetryData'
+        '404':
+          description: Устройтво не найдено
+        '500':
+          description: Ошибка сервера
+                  
+  /scenario:
+    post:
+      tags:
+        - scenario
+      summary: Создать новый сценарий
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+      responses:
+        '201':
+          description: Запрос отработан корректно
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/Scenario'
+        '500':
+          description: Ошибка сервера
+          
+components:
+  schemas:
+    Device:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        houseId:
+          type: integer
+          format: int64
+          example: 198772
+        name:
+          type: string
+          format: string
+          example: 'Камера наблюдения'
+        type:
+          type: string
+          example: CAMERA
+          enum:
+            - HEATING
+            - LIGHT
+            - GATES
+            - CAMERA
+      xml:
+        name: order
+        
+    TelemetryData:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 5
+        deviceId:
+          type: integer
+          format: int64
+          example: 5
+        value:
+          type: string
+          format: string
+          example: 'Значение температуры: 25,5С'
+        createdAt:
+          type: string
+          format: date-time
+          example: '01.02.2024'
+      xml:
+        name: order
+        
+    Scenario:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Сценарий открыть утром ворота'
+        actions:
+          type: array
+          items:
+            type: object
+            properties:
+              deviceId:
+                type: string
+                example: 2
+              command:
+                type: string
+                example: 'open gates'
+    
